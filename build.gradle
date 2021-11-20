@@ -1,11 +1,12 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.beryx.jlink' version '2.24.4'
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
-group 'com.example'
-version '1.0-SNAPSHOT'
+group 'com.musekeys'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -30,6 +31,14 @@ application {
 javafx {
     version = '11.0.2'
     modules = ['javafx.controls', 'javafx.fxml']
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.musekeys.midiplayer.Launcher'
+        )
+    }
 }
 
 dependencies {
