@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+         <children>
+      <BorderPane>
+         <center>
+            <StackPane BorderPane.alignment="CENTER">
+               <children>
+                        <Slider fx:id="timeSlider">
+                     <tooltip>
+                        <Tooltip text="Adjust Time" />
+                     </tooltip>
+                  </Slider>
+                  <Pane fx:id="sliderPane" />
+               </children>
+            </StackPane>
+         </center>
+         <left>
+            <Label fx:id="currentTime" text="0:0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Label fx:id="duration" text="0:0" BorderPane.alignment="CENTER" />
+         </right>
+         <top>
+                  <ToolBar fx:id="toolBar" BorderPane.alignment="CENTER">
+                    <items>
+                        <ToggleButton fx:id="playbackButton" mnemonicParsing="false" onAction="#playbackButtonPressed" />
+                        <Button mnemonicParsing="false" onAction="#stopButtonPressed">
+                     <tooltip>
+                        <Tooltip text="Stop Playback" />
+                     </tooltip>
+                     <graphic>
+                        <SVGPath content="M2 2h12v12h-12z" />
+                     </graphic>
+                  </Button>
+                        <Button mnemonicParsing="false" onAction="#previous">
+                     <tooltip>
+                        <Tooltip text="Previous" />
+                     </tooltip>
+                     <graphic>
+                        <SVGPath content="M2 14v-12h2v5.5l5-5v5l5-5v11l-5-5v5l-5-5v5.5z" />
+                     </graphic>
+                  </Button>
+                  <Button layoutX="62.0" layoutY="10.0" mnemonicParsing="false" onAction="#forward">
+                     <tooltip>
+                        <Tooltip text="Next" />
+                     </tooltip>
+                     <graphic>
+                        <SVGPath content="M14 2v12h-2v-5.5l-5 5v-5l-5 5v-11l5 5v-5l5 5v-5.5z" />
+                     </graphic>
+                  </Button>
+                        <Separator />
+                        <Button mnemonicParsing="false" onAction="#rewindPressed">
+                     <tooltip>
+                        <Tooltip text="Rewind" />
+                     </tooltip>
+                     <graphic>
+                        <SVGPath content="M9 2.5v5l5-5v11l-5-5v5l-5.5-5.5z" />
+                     </graphic>
+                  </Button>
+                        <Button mnemonicParsing="false" onAction="#forwardPressed">
+                     <tooltip>
+                        <Tooltip text="Forward" />
+                     </tooltip>
+                     <graphic>
+                        <SVGPath content="M8 13.5v-5l-5 5v-11l5 5v-5l5.5 5.5z" />
+                     </graphic>
+                  </Button>
+                  <Separator layoutX="137.0" layoutY="10.0" />
+                  <Label text="Tempo" />
+                  <Slider fx:id="tempoSlider" maxWidth="1.7976931348623157E308">
+                     <tooltip>
+                        <Tooltip text="Adjust Tempo" />
+                     </tooltip>
+                  </Slider>
+                  <TextField fx:id="tempoTextfield" editable="false" prefWidth="45.0">
+                     <tooltip>
+                        <Tooltip text="Tempo Factor" />
+                     </tooltip>
+                  </TextField>
+                  <ChoiceBox fx:id="tempoChoice">
+                     <tooltip>
+                        <Tooltip text="Tempo Unit" />
+                     </tooltip>
+                  </ChoiceBox>
+                  <Label fx:id="bpmLabel" text="BPM" />
+                  <TextField fx:id="bpmTextfield" editable="false" prefWidth="67.0">
+                     <tooltip>
+                        <Tooltip text="Tempo in Beats Per Minute" />
+                     </tooltip>
+                  </TextField>
+                  <Separator layoutX="166.0" layoutY="10.0" />
+                  <ToggleButton fx:id="loopA" mnemonicParsing="false" text="A" textFill="#19bb0a">
+                     <tooltip>
+                        <Tooltip text="Start Loop" />
+                     </tooltip>
+                  </ToggleButton>
+                  <SVGPath content="M2 5h10v3l4-4-4-4v3h-12v6h2zM14 11h-10v-3l-4 4 4 4v-3h12v-6h-2z" />
+                  <ToggleButton fx:id="loopB" mnemonicParsing="false" text="B" textFill="#000cff">
+                     <tooltip>
+                        <Tooltip text="End Loop" />
+                     </tooltip>
+                  </ToggleButton>
+                  <TextField fx:id="loopAMin" editable="false" prefHeight="25.0" prefWidth="40.0" />
+                  <Label text=":" />
+                  <TextField fx:id="loopASec" editable="false" prefHeight="25.0" prefWidth="32.0" />
+                  <SVGPath content="M2 5h10v3l4-4-4-4v3h-12v6h2zM14 11h-10v-3l-4 4 4 4v-3h12v-6h-2z" layoutX="602.0" layoutY="15.0" />
+                  <TextField fx:id="loopBMin" editable="false" prefWidth="40.0" />
+                  <Label layoutX="641.0" layoutY="14.0" text=":" />
+                  <TextField fx:id="loopBSec" editable="false" prefWidth="30.0" />
+                  <Separator layoutX="596.0" layoutY="10.0" />
+                  <Button mnemonicParsing="false" onAction="#settingsPressed">
+                     <graphic>
+                        <SVGPath content="M14.59 9.535c-0.839-1.454-0.335-3.317 1.127-4.164l-1.572-2.723c-0.449 0.263-0.972 0.414-1.529 0.414-1.68 0-3.042-1.371-3.042-3.062h-3.145c0.004 0.522-0.126 1.051-0.406 1.535-0.839 1.454-2.706 1.948-4.17 1.106l-1.572 2.723c0.453 0.257 0.845 0.634 1.123 1.117 0.838 1.452 0.336 3.311-1.12 4.16l1.572 2.723c0.448-0.261 0.967-0.41 1.522-0.41 1.675 0 3.033 1.362 3.042 3.046h3.145c-0.001-0.517 0.129-1.040 0.406-1.519 0.838-1.452 2.7-1.947 4.163-1.11l1.572-2.723c-0.45-0.257-0.839-0.633-1.116-1.113zM8 11.24c-1.789 0-3.24-1.45-3.24-3.24s1.45-3.24 3.24-3.24c1.789 0 3.24 1.45 3.24 3.24s-1.45 3.24-3.24 3.24z" />
+                     </graphic>
+                  </Button>
+                    </items>
+                  </ToolBar>
+         </top>
+      </BorderPane>
+         </children>
+      </VBox>

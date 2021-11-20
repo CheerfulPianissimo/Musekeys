@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <ToolBar>
+               <items>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="MuseKeys Settings" />
+               </items>
+            </ToolBar>
+            <TitledPane text="MIDI ">
+               <content>
+                  <VBox spacing="5.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label text="MIDI OUT" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="midiOutTable" editable="true">
+                          <columns>
+                              <TableColumn fx:id="selectedOut" prefWidth="36.0" />
+                            <TableColumn fx:id="nameOut" prefWidth="49.0" text="Name" />
+                            <TableColumn fx:id="vendorOut" prefWidth="75.0" text="Vendor" />
+                              <TableColumn fx:id="versionOut" prefWidth="75.0" text="Version" />
+                              <TableColumn fx:id="desOut" prefWidth="75.0" text="Description" />
+                          </columns>
+                        </TableView>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SoundFont (Restart required)" />
+                              <TextField fx:id="soundFont" promptText="SoundFont For Gervill" />
+                              <Button mnemonicParsing="false" onAction="#openSoundFont">
+                                 <graphic>
+                                    <SVGPath content="M13 15l3-8h-13l-3 8zM2 6l-2 9v-13h4.5l2 2h6.5v2z" />
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.*?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <TableView fx:id="table" editable="true" BorderPane.alignment="CENTER">
+        <columns>
+            <TableColumn fx:id="playing" prefWidth="21.0" sortable="false" />
+          <TableColumn fx:id="fileName" minWidth="-1.0" prefWidth="227.0" sortable="false" text="File Name" />
+          <TableColumn fx:id="folder" minWidth="-1.0" prefWidth="73.0" sortable="false" text="Folder" />
+            <TableColumn fx:id="size" minWidth="-1.0" prefWidth="73.0" sortable="false" text="Size" />
+        </columns>
+      </TableView>
+   </center>
+   <left>
+      <ToolBar orientation="VERTICAL" BorderPane.alignment="CENTER">
+        <items>
+          <Button fx:id="addFile">
+               <graphic>
+                  <SVGPath content="M9 4l-2-2h-7v13h16v-11h-7zM11 11h-2v2h-2v-2h-2v-2h2v-2h2v2h2v2z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Add File" />
+               </tooltip>
+            </Button>
+            <Button fx:id="removeFile">
+               <graphic>
+                  <SVGPath content="M9 4l-2-2h-7v13h16v-11h-7zM11 11h-6v-2h6v2z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Remove Selected File" />
+               </tooltip>
+            </Button>
+            <Separator />
+            <Button fx:id="up">
+               <graphic>
+                  <SVGPath content="m 12.777013,8.7282839 -7.5000003,7.5000001 4.5,0 0,8 6.0000003,0 0,-8 4.5,0 z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Move Selected File Up" />
+               </tooltip>
+            </Button>
+            <Button fx:id="down">
+               <graphic>
+                  <SVGPath content="M8 15.5l7.5-7.5h-4.5v-8h-6v8h-4.5z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Move Selected File Down" />
+               </tooltip>
+            </Button>
+        </items>
+      </ToolBar>
+   </left>
+   <right>
+      <ToolBar orientation="VERTICAL" BorderPane.alignment="CENTER">
+         <items>
+            <Button onAction="#savePressed">
+               <graphic>
+                  <SVGPath content="M14 0h-14v16h16v-14l-2-2zM8 2h2v4h-2v-4zM14 14h-12v-12h1v5h9v-5h1.172l0.828 0.828v11.172zM14 0h-14v16h16v-14l-2-2zM8 2h2v4h-2v-4zM14 14h-12v-12h1v5h9v-5h1.172l0.828 0.828v11.172z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Save This Playlist" />
+               </tooltip>
+            </Button>
+            <Button fx:id="up11" onAction="#loadPressed">
+               <graphic>
+                  <SVGPath content="M13 15l3-8h-13l-3 8zM2 6l-2 9v-13h4.5l2 2h6.5v2z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Load A Playlist" />
+               </tooltip>
+            </Button>
+            <Button onAction="#clearAll">
+               <graphic>
+                  <SVGPath content="M3 16h10l1-11h-12zM10 2v-2h-4v2h-5v3l1-1h12l1 1v-3h-5zM9 2h-2v-1h2v1z" />
+               </graphic>
+            </Button>
+            <ToggleButton fx:id="repeatButton" mnemonicParsing="false">
+               <graphic>
+                  <SVGPath content="M13.901 2.599c-1.463-1.597-3.565-2.599-5.901-2.599-4.418 0-8 3.582-8 8h1.5c0-3.59 2.91-6.5 6.5-6.5 1.922 0 3.649 0.835 4.839 2.161l-2.339 2.339h5.5v-5.5l-2.099 2.099z  M14.5 8c0 3.59-2.91 6.5-6.5 6.5-1.922 0-3.649-0.835-4.839-2.161l2.339-2.339h-5.5v5.5l2.099-2.099c1.463 1.597 3.565 2.599 5.901 2.599 4.418 0 8-3.582 8-8h-1.5z" />
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Repeat Playlist" />
+               </tooltip>
+            </ToggleButton>
+         </items>
+      </ToolBar>
+   </right>
+</BorderPane>

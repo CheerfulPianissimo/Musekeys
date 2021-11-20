@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.musekeys.control.NumberTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox spacing="5.0">
+               <children>
+                        <Label text="Visible White Keys " />
+                        <Button mnemonicParsing="false" onAction="#visibleKeysMinus">
+                           <graphic>
+                              <SVGPath content="M15.504 13.616l-3.79-3.223c-0.392-0.353-0.811-0.514-1.149-0.499 0.895-1.048 1.435-2.407 1.435-3.893 0-3.314-2.686-6-6-6s-6 2.686-6 6 2.686 6 6 6c1.486 0 2.845-0.54 3.893-1.435-0.016 0.338 0.146 0.757 0.499 1.149l3.223 3.79c0.552 0.613 1.453 0.665 2.003 0.115s0.498-1.452-0.115-2.003zM6 10c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zM3 5h6v2h-6z" />
+                           </graphic>
+                        </Button>
+                  <NumberTextField fx:id="visibleKeys" max="52" min="12" value="52" />
+                        <Button mnemonicParsing="false" onAction="#visibleKeysPlus">
+                           <graphic>
+                              <SVGPath content="M15.504 13.616l-3.79-3.223c-0.392-0.353-0.811-0.514-1.149-0.499 0.895-1.048 1.435-2.407 1.435-3.893 0-3.314-2.686-6-6-6s-6 2.686-6 6 2.686 6 6 6c1.486 0 2.845-0.54 3.893-1.435-0.016 0.338 0.146 0.757 0.499 1.149l3.223 3.79c0.552 0.613 1.453 0.665 2.003 0.115s0.498-1.452-0.115-2.003zM6 10c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zM7 3h-2v2h-2v2h2v2h2v-2h2v-2h-2z" />
+                           </graphic>
+                        </Button>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" spacing="5.0">
+               <children>
+                        <Label text="Transpose              " />
+                        <Button mnemonicParsing="false" onAction="#transposeMinus">
+                           <graphic>
+                              <SVGPath content="M0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5zM0 6.5v3c0 0.276 0.224 0.5 0.5 0.5h15c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5z" />
+                           </graphic>
+                        </Button>
+                  <NumberTextField fx:id="transpose" max="12" />
+                        <Button mnemonicParsing="false" onAction="#transposePlus">
+                           <graphic>
+                              <SVGPath content="M15.5 6h-5.5v-5.5c0-0.276-0.224-0.5-0.5-0.5h-3c-0.276 0-0.5 0.224-0.5 0.5v5.5h-5.5c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5h5.5v5.5c0 0.276 0.224 0.5 0.5 0.5h3c0.276 0 0.5-0.224 0.5-0.5v-5.5h5.5c0.276 0 0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5z" />
+                           </graphic>
+                        </Button>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="35.0" spacing="5.0">
+               <children>
+                        <Label text="Program                 " />
+                  <Hyperlink fx:id="program" text="Select Instrument" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="60.0" spacing="5.0">
+               <children>
+                        <Label text="Output to Channel:" />
+                  <NumberTextField fx:id="channel" max="16" prefWidth="33.0" text="0" />
+               </children>
+            </HBox>
+                  <CheckBox fx:id="midithru" mnemonicParsing="false" text="Midi Thru" />
+                  <CheckBox fx:id="useEffects" mnemonicParsing="false" text="Use Effects" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+   </top>
+</BorderPane>
