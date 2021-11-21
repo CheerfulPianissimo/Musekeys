@@ -10,9 +10,12 @@ Midi Music Visualizer/Player inspired by *Synthesia* and *TMIDI*.
 
 (This was my attempt at learning JavaFX when I was 14.. and it shows. Presently unmaintained.)
 
-#Download
+# Download
 * A Pre-built release available in the releases section
 
-#Building
+# Building
 * Download repo
 * ``gradlew build`` in the root directory. There are no external dependencies.
+
+# Licensing
+* Please see the file named LICENSE.
