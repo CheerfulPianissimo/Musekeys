@@ -96,6 +96,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		addOctaveLines();
 		updateGradients();	
 		setupUpdateThread();
+		refreshSequenceFromSequencer();
 		/*Rotate rotate=new Rotate();
 		rotate.setAxis(Rotate.Z_AXIS);
 		rotate.setAngle(20);
@@ -232,18 +233,20 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 				 } catch (Exception e1) {
 					e1.printStackTrace();
 				}
-			if(shouldRun==false)continue;
+			//if(shouldRun==false)continue;
 			if(sequencer.getSequence()==null){
 				if(pane.isVisible())
 				pane.setVisible(false);				
 				continue;			
 			}
-			if(sequencer.getSequence()!=sequence){
+			/*if(sequencer.getSequence()!=sequence){
 				shouldRun=false;		
 				pane.setVisible(true);
-				Platform.runLater(()->refreshSequenceFromSequencer());
+
 				continue;
-			}
+			}*/
+			Platform.runLater(()->refreshSequenceFromSequencer());
+
 			long pos; 
 			if(getMode()==Mode.TICKS)
 			pos= sequencer.getTickPosition();
@@ -307,6 +310,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 	public void refresh(){
 		shouldRun=false;
 		drawPosition=sequencer.getMicrosecondPosition();
+
 		/*for(int co=0;co<pane.getChildren().size();co++){
 			if(pane.getChildren().get(co) instanceof NoteRectangle){				
 				rectangles.add((NoteRectangle) pane.getChildren().remove(co));
@@ -334,7 +338,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		if(getMode()==Mode.TICKS)
 		this.length = sequence.getTickLength();
 		else this.length=sequencer.getMicrosecondLength();
-		refresh();
+		//refresh();
 		shouldRun=true;
 	}
 
