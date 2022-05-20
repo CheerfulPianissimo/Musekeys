@@ -4,7 +4,17 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
 
 public class Note {
-    private long start, end;
+    private long start;
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public void setEnd(long end) {
+        this.end = end;
+    }
+
+    private long end;
     /*private int noteNo;
     private byte channel;*/
     private MidiEvent startEvent, endEvent;

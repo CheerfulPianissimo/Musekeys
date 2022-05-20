@@ -43,10 +43,10 @@ public class Tester extends Application {
 		//keyboard.setUseEffects(false);
 		keyboard.getTransmitter().setReceiver(synth.getReceiver());
 
-		File file = new File("/mnt/D/midi/pop_fantasy_kyle.mid");
+		File file = new File("/mnt/D/midi/laputamidi18.mid");
 		Sequence sequence=MidiSystem.getSequence(file);
 		for (Track track: sequence.getTracks()){
-			sequence.deleteTrack(track);
+			//sequence.deleteTrack(track);
 		}
 
 		//Sequence sequence=new Sequence(Sequence.PPQ,1);
@@ -55,15 +55,16 @@ public class Tester extends Application {
 				MidiSystem.getSequencer(false);
 		sequencer.getTransmitter().setReceiver(keyboard.getReceiver());
 		sequencer.getTransmitter().setReceiver(synth.getReceiver());
-		keyboard.getTransmitter().setReceiver(sequencer.getReceiver());
+		//keyboard.getTransmitter().setReceiver(sequencer.getReceiver());
 		sequencer.setSequence(sequence);
 		sequencer.open();
 		sequencer.recordEnable(recTrack,-1);
-		sequencer.startRecording();
+		//sequencer.startRecording();
 		sequencer.start();
 
 
 		WaterFall waterFall = new WaterFall(sequencer);
+		keyboard.getTransmitter().setReceiver(waterFall.getReceiver());
 		waterFall.visibleWhiteKeysProperty().bindBidirectional(keyboard.visibleWhiteKeysProperty());
 		waterFall.setOnMouseClicked(e->{
 
@@ -96,13 +97,14 @@ public class Tester extends Application {
 			//}
 		});
 		pane.setCenter(waterFallPane);
+		pane.setTop(new MidiPlayerControl(sequencer));
 		/*waterFall.setCache(true);
 		waterFall.setCacheHint(CacheHint.SPEED);*/
 		Scene scene=new Scene(pane);
 		primaryStage.setScene(scene);
-		primaryStage.setFullScreen(false);
+		//primaryStage.setFullScreen(false);
 		primaryStage.show();
-		primaryStage.setMaximized(true);
+		//primaryStage.setMaximized(true);
 		/*sceneHeight=waterFallpane.getHeight();
 		waterFallpane.heightProperty().addListener(e->{sceneHeight=waterFallpane.getHeight();});*/
 		primaryStage.setOnCloseRequest(e -> {

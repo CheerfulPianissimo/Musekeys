@@ -12,9 +12,7 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.SortedMap;
 
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
+import javax.sound.midi.*;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -42,6 +40,12 @@ import javafx.beans.value.ObservableValue;
 
 public class WaterFall extends StackPane implements com.musekeys.midiplayer.MidiVisualizer{
 	private Sequence sequence;
+
+	public Receiver getReceiver() {
+		return receiver;
+	}
+
+	private Receiver receiver;
 	private Deque<NoteRectangle> rectangles;
 	private Pane pane,animationPane;
 	private Rectangle cursor;
@@ -54,7 +58,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 	protected Sequencer sequencer;
 	private BooleanProperty	useEffects = new SimpleBooleanProperty(false),
 			seekOnClick=new SimpleBooleanProperty(true);
-	private DoubleProperty scaleFactor=new SimpleDoubleProperty(1);
+	private DoubleProperty scaleFactor=new SimpleDoubleProperty(1000);
 	private IntegerProperty noteSensitivity=new SimpleIntegerProperty(50),visibleWhiteKeys
 			=new SimpleIntegerProperty(52);
 	private double whiteKeyWidth=0;
@@ -66,7 +70,8 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 	private Paint backgroundColor;
 	private boolean shouldRun=true;
 	private boolean[] shouldRender=new boolean[16];
-	private ObjectProperty<Mode> mode=new SimpleObjectProperty<Mode>(Mode.TICKS);
+	private ObjectProperty<Mode> mode=new SimpleObjectProperty<Mode>(Mode.MICROSECONDS);
+	private Note[][] noteMap = new Note[16][88];
 	
 	public enum Mode{
 		TICKS,MICROSECONDS
@@ -84,7 +89,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		clip.heightProperty().bind(this.heightProperty());
 		clip.widthProperty().bind(this.widthProperty());
 		this.setBlendMode(BlendMode.SRC_OVER);
-		//this.setClip(clip);
+		this.setClip(clip);
 		this.setTranslateZ(20);
 		this.getChildren().add(animationPane);
 		cursor=new Rectangle(0,5,Color.GREEN);
@@ -94,9 +99,10 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		pane.getChildren().add(cursor);				
 		setupKeyOrder();
 		addOctaveLines();
-		updateGradients();	
-		setupUpdateThread();
+		updateGradients();
 		refreshSequenceFromSequencer();
+		setupUpdateThread();
+
 		/*Rotate rotate=new Rotate();
 		rotate.setAxis(Rotate.Z_AXIS);
 		rotate.setAngle(20);
@@ -104,7 +110,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		rotate.pivotXProperty().bind(this.widthProperty().divide(2));
 		getTransforms().addAll(rotate);*/
 		pane.setOnMouseClicked(e->{
-			if(this.isFocused()==false)
+			if(!this.isFocused())
 			this.requestFocus();
 			if(isSeekOnClick()&&e.getButton().equals(MouseButton.MIDDLE)){
 				if(getMode()==Mode.MICROSECONDS)
@@ -192,6 +198,47 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 				this.getChildren().add(animationPane);
 			}
 		});
+
+		receiver = new Receiver() {
+			@Override
+			public void send(MidiMessage message, long timeStamp) {
+				try {
+					if (message instanceof ShortMessage) {
+						ShortMessage shortMsg = (ShortMessage) message;
+						if ((shortMsg.getCommand() == ShortMessage.NOTE_OFF)
+								|| (shortMsg.getCommand() == ShortMessage.NOTE_ON)) {
+							int channel = shortMsg.getChannel();
+							int noteNo = shortMsg.getData1();
+							int pianoNoteNo = noteNo - 21;
+							long pos;
+							if(getMode()==Mode.TICKS)
+								pos= sequencer.getTickPosition();
+							else pos=sequencer.getMicrosecondPosition();
+							if((shortMsg.getCommand() == ShortMessage.NOTE_OFF)&&noteMap[channel][pianoNoteNo]!=null){
+								Note prevNote=noteMap[channel][pianoNoteNo];
+								prevNote.setEndEvent(new MidiEvent(message,pos));
+								prevNote.setEnd(pos);
+								noteMap[channel][pianoNoteNo]=null;
+								refresh();
+							}else if(shortMsg.getCommand() == ShortMessage.NOTE_ON) {
+								Note playNote = new Note(pos, -1);
+								playNote.setStartEvent(new MidiEvent(message, pos));
+								notes.put(drawPosition, playNote);
+								noteMap[channel][pianoNoteNo]=playNote;
+							}
+						}
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void close() {
+
+			}
+		};
 	}
 
 	private void addOctaveLines() {
@@ -229,7 +276,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		Thread updateThread=new Thread(()->{
 			while(true){
 				try {
-					Thread.sleep(10);
+					//Thread.sleep(10);
 				 } catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -245,11 +292,11 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 
 				continue;
 			}*/
-			Platform.runLater(()->refreshSequenceFromSequencer());
+			//Platform.runLater(()->refreshSequenceFromSequencer());
 
 			long pos; 
 			if(getMode()==Mode.TICKS)
-			pos= sequencer.getTickPosition();
+			pos=sequencer.getTickPosition();
 			else pos=sequencer.getMicrosecondPosition();
 			//System.out.println((pos/sequencer.getSequence().getResolution()));
 			double height=animationPane.getHeight();
@@ -260,11 +307,12 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 			if(nextPos<drawPosition||drawPosition*2<nextPos)
 				drawPosition=pos;				
 			SortedMap<Double, Note> current = notes.subMap(drawPosition,nextPos);			
+			System.out.println(current.size()+" "+drawPosition+" "+nextPos+" "+pane.getChildren().size());
 			drawPosition=nextPos;
 			Platform.runLater(()->{			
-			update(current,pos);	
-			cursor.setY((((length-pos)/getScaleFactor())));
-			pane.setTranslateY(-((length-pos)/getScaleFactor())+height);			
+			update(current,pos);
+			cursor.setTranslateY(-drawPosition/getScaleFactor()-height/2.0);
+			pane.setTranslateY(-(pos/getScaleFactor()-height));
 			});			 
 			}
 		});		 
@@ -285,20 +333,20 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 	}*/
 
 	protected void update(SortedMap<Double, Note> currentNotes,long currentTime) {
-		double nextPos=currentTime+(animationPane.getHeight()*getScaleFactor());	
+		double prevPos=currentTime+(animationPane.getHeight()*getScaleFactor());
 		//System.out.println(rectangles.size());
-		for(int co=0;co<pane.getChildren().size();co++){
+		/*for(int co=0;co<pane.getChildren().size();co++){
 			Node node=pane.getChildren().get(co);
 			if(node instanceof NoteRectangle){
 				NoteRectangle rect=(NoteRectangle)node;				
-				if(rect.getNote().getEnd()<currentTime||rect.getNote().getStart()>nextPos){
-					pane.getChildren().remove(co);
-					rectangles.add(rect);
-				}/*else if(rect.getNote().getStart()<currentTime&&rect.getNote().getEnd()>currentTime){
-					rect.setFill(((Color)rect.getFill()).deriveColor(0,1,1.3,1));
-				}*/
+				if(rect.getNote().getStart()>currentTime){
+					//pane.getChildren().remove(co);
+					//rectangles.add(rect);
+				}//else if(rect.getNote().getStart()<currentTime&&rect.getNote().getEnd()>currentTime){
+					//rect.setFill(((Color)rect.getFill()).deriveColor(0,1,1.3,1));
+				//}
 			}//else System.out.println(node);
-		}
+		}*/
 		for (Map.Entry<Double, Note> note: currentNotes.entrySet()) {
 			Note value=note.getValue();
 			if(shouldRender[value.getChannel()]==true)
@@ -309,7 +357,9 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 
 	public void refresh(){
 		shouldRun=false;
-		drawPosition=sequencer.getMicrosecondPosition();
+		if(getMode()==Mode.TICKS)
+			drawPosition=sequencer.getTickPosition();
+		else drawPosition=sequencer.getMicrosecondPosition();
 
 		/*for(int co=0;co<pane.getChildren().size();co++){
 			if(pane.getChildren().get(co) instanceof NoteRectangle){				
@@ -322,6 +372,10 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 			pane.getChildren().add(line);
 		}
 		updateOctaveLines();
+
+		SortedMap<Double, Note> current = notes.subMap(
+				drawPosition-(animationPane.getHeight()*getScaleFactor()),drawPosition);
+		update(current,(long)drawPosition);
 		shouldRun=true;
 	}
 	
@@ -338,7 +392,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		if(getMode()==Mode.TICKS)
 		this.length = sequence.getTickLength();
 		else this.length=sequencer.getMicrosecondLength();
-		//refresh();
+		refresh();
 		shouldRun=true;
 	}
 
@@ -375,7 +429,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		NoteRectangle rect;
 		if(rectangles.isEmpty()){
 			rect = new NoteRectangle();
-            rect.setEffect(ds);
+            //rect.setEffect(ds);
             /*rect.setArcHeight(10);
             rect.setArcWidth(10);*/
             rectangles.add(rect);
@@ -386,7 +440,12 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		}*/
 		rect.setNote(note);
 		rect.setWidth(whiteKeyWidth);
-		rect.setHeight((note.getEnd() - note.getStart()) / getScaleFactor());
+		if(note.getEnd()==-1){
+			rect.setHeight(animationPane.getHeight()*2);
+		}else{
+			rect.setHeight((note.getEnd() - note.getStart()) / getScaleFactor());
+		}
+
 		rect.setFill(paint[note.getChannel()]);
 		if(keyOrder[note.getNoteNo()] == 1){			
 			rect.setWidth(blackKeyWidth);			
@@ -395,7 +454,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		double opacity=(strength*100)/getNoteSensitivity();
 		rect.setOpacity(opacity/100);
 		rect.setX(keyX[note.getNoteNo()]);
-		rect.setY((length-note.getEnd()) / getScaleFactor());
+		rect.setY((note.getStart()) / getScaleFactor());
 		return rect;
 	}
 
