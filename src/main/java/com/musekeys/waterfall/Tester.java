@@ -43,7 +43,14 @@ public class Tester extends Application {
 		//keyboard.setUseEffects(false);
 		keyboard.getTransmitter().setReceiver(synth.getReceiver());
 
-		File file = new File("/mnt/D/midi/laputamidi18.mid");
+		//File file = new File("/mnt/D/midi/.mid");
+		FileChooser fileChooser=new FileChooser();
+		fileChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("MIDI files", "*.mid","*.kar"),
+				new FileChooser.ExtensionFilter("All Files", "*.*")
+		);
+		//fileChooser.setInitialDirectory(new File("/mnt/D/midi/"));
+		File file = fileChooser.showOpenDialog(primaryStage);
 		Sequence sequence=MidiSystem.getSequence(file);
 		for (Track track: sequence.getTracks()){
 			//sequence.deleteTrack(track);

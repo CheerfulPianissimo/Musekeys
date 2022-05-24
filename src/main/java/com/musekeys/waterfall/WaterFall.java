@@ -1,12 +1,16 @@
 package com.musekeys.waterfall;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
@@ -88,6 +92,16 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		Rectangle clip=new Rectangle();
 		clip.heightProperty().bind(this.heightProperty());
 		clip.widthProperty().bind(this.widthProperty());
+		Image img;
+		try {
+			img=new Image(new FileInputStream("./bgimg.png"));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		ImageView bgImg=new ImageView(img);
+		//bgImg.fitHeightProperty().bind(this.heightProperty());
+		this.getChildren().add(bgImg);
+
 		this.setBlendMode(BlendMode.SRC_OVER);
 		this.setClip(clip);
 		this.setTranslateZ(20);
@@ -144,11 +158,18 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 		this.widthProperty().addListener(
 			(ObservableValue<? extends Number> obv, Number oldValue, Number newValue) -> {				
 			whiteKeyWidth = newValue.doubleValue() / 52;
-			blackKeyWidth = whiteKeyWidth / 2;	
+			blackKeyWidth = whiteKeyWidth / 2;
+			bgImg.setFitWidth(newValue.doubleValue());
+
 			for(int co=0;co<keyX.length;co++)
 				keyX[co]=calculateX(co);
 			refresh();
 		});
+		this.heightProperty().addListener(
+				(ObservableValue<? extends Number> obv, Number oldValue, Number newValue) ->{
+					bgImg.setFitHeight(newValue.doubleValue());
+				}
+		);
 		scaleFactorProperty().addListener(
 			(ObservableValue<? extends Number> obv, Number oldValue, Number newValue) -> {
 				this.refresh();	
@@ -306,8 +327,7 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 			}
 			if(nextPos<drawPosition||drawPosition*2<nextPos)
 				drawPosition=pos;				
-			SortedMap<Double, Note> current = notes.subMap(drawPosition,nextPos);			
-			System.out.println(current.size()+" "+drawPosition+" "+nextPos+" "+pane.getChildren().size());
+			SortedMap<Double, Note> current = notes.subMap(drawPosition,nextPos);
 			drawPosition=nextPos;
 			Platform.runLater(()->{			
 			update(current,pos);
@@ -333,15 +353,15 @@ public class WaterFall extends StackPane implements com.musekeys.midiplayer.Midi
 	}*/
 
 	protected void update(SortedMap<Double, Note> currentNotes,long currentTime) {
-		double prevPos=currentTime+(animationPane.getHeight()*getScaleFactor());
+		double prevPos=currentTime-(animationPane.getHeight()*getScaleFactor());
 		//System.out.println(rectangles.size());
 		/*for(int co=0;co<pane.getChildren().size();co++){
 			Node node=pane.getChildren().get(co);
 			if(node instanceof NoteRectangle){
 				NoteRectangle rect=(NoteRectangle)node;				
-				if(rect.getNote().getStart()>currentTime){
-					//pane.getChildren().remove(co);
-					//rectangles.add(rect);
+				if(rect.getNote().getEnd()<prevPos){
+					pane.getChildren().remove(co);
+					rectangles.add(rect);
 				}//else if(rect.getNote().getStart()<currentTime&&rect.getNote().getEnd()>currentTime){
 					//rect.setFill(((Color)rect.getFill()).deriveColor(0,1,1.3,1));
 				//}
